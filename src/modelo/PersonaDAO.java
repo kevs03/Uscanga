@@ -35,4 +35,19 @@ public class PersonaDAO {
         }
         return datos;
     }
+    //Metodo Agregar
+    public int agregar(Persona p){
+        String sql = "insert into persona (Nombre, Correo, Telefono) values (?,?,?)";
+        try {
+            con = conectar.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, p.getNom());
+            ps.setString(2, p.getCorreo());
+            ps.setString(3, p.getTel());
+            ps.executeUpdate();
+        } catch (Exception e){
+
+        }
+        return 1;
+    }
 }

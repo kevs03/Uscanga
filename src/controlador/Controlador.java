@@ -25,14 +25,35 @@ public class Controlador implements ActionListener{
     public Controlador(Vista v){
         this.vista = v;
         this.vista.btnListar.addActionListener(this);
+        this.vista.btnGuardar.addActionListener(this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        //Si dan click al boton Listar se manda a llamar al metodo Listar
         if(e.getSource()==vista.btnListar){
             listar(vista.tabla);
         }
+        //Si dan click al boton Guardar se manda a llamar al metodo Guardar
+        if(e.getSource() == vista.btnGuardar){
+            agregar();
+        }
     }
+//Metodo Agregar
+    public void agregar(){
+    String nom = vista.txtNombre.getText();
+    String correo = vista.txtCorreo.getText();
+    String tel = vista.txtTelefono.getText();
+    p.setNom(nom);
+    p.setCorreo(correo);
+    p.setTel(tel);
+    int r = dao.agregar(p);
+    if(r == 1){
+        JOptionPane.showMessageDialog(vista, "Usuario agregado con exito");
+    }else {
+        JOptionPane.showMessageDialog(vista, "Error");
+    }
+}
 
 //Metodo Listar
     public void listar(JTable tabla){

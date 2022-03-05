@@ -61,6 +61,7 @@ public class Vista extends javax.swing.JFrame {
             }
         });
 
+        txtId.setEditable(false);
         txtId.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtIdActionPerformed(evt);
