@@ -26,19 +26,72 @@ public class Controlador implements ActionListener{
         this.vista = v;
         this.vista.btnListar.addActionListener(this);
         this.vista.btnGuardar.addActionListener(this);
+        this.vista.btnEditar.addActionListener(this);
+        this.vista.btnOk.addActionListener(this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         //Si dan click al boton Listar se manda a llamar al metodo Listar
         if(e.getSource()==vista.btnListar){
+            limpiarTabla();
             listar(vista.tabla);
         }
         //Si dan click al boton Guardar se manda a llamar al metodo Guardar
         if(e.getSource() == vista.btnGuardar){
             agregar();
+            limpiarTabla();
+            listar(vista.tabla);
+        }
+        //Si dan click al boton Editar se manda a llamar al metodo Editar y se podra seleccionar una fila
+        if(e.getSource() == vista.btnEditar){
+            int fila = vista.tabla.getSelectedRow();
+            if(fila == -1){
+                JOptionPane.showMessageDialog(vista, "Debe seleccionar una Fila");
+            }
+            else{
+                int id = Integer.parseInt((String)vista.tabla.getValueAt(fila, 0).toString());
+                String nom = (String)vista.tabla.getValueAt(fila, 1);
+                String correo = (String)vista.tabla.getValueAt(fila, 2);
+                String tel = (String)vista.tabla.getValueAt(fila, 3);
+                vista.txtId.setText(""+id);
+                vista.txtNombre.setText(nom);
+                vista.txtCorreo.setText(correo);
+                vista.txtTelefono.setText(tel);
+            }
+        }
+        if(e.getSource() == vista.btnOk){
+            Actualizar();
+            limpiarTabla();
+            listar(vista.tabla);
         }
     }
+
+    //Metodo Actualizar
+    void limpiarTabla(){
+        for(int i = 0; i < vista.tabla.getRowCount(); i++){
+            modelo.removeRow(i);
+            i = i-1;
+        }
+    }
+    public void Actualizar(){
+        int id = Integer.parseInt(vista.txtId.getText());
+        String nom = vista.txtNombre.getText();
+        String correo = vista.txtCorreo.getText();
+        String tel = vista.txtTelefono.getText();
+        p.setId(id);
+        p.setNom(nom);
+        p.setCorreo(correo);
+        p.setTel(tel);
+        int r = dao.Actualizar(p);
+        if(r == 1){
+            JOptionPane.showMessageDialog(vista, "Usuario actualizado con exito");
+        }else {
+            JOptionPane.showMessageDialog(vista, "Error");
+        }
+}
+
+
 //Metodo Agregar
     public void agregar(){
     String nom = vista.txtNombre.getText();
