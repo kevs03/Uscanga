@@ -28,6 +28,9 @@ public class Controlador implements ActionListener{
         this.vista.btnGuardar.addActionListener(this);
         this.vista.btnEditar.addActionListener(this);
         this.vista.btnOk.addActionListener(this);
+        this.vista.btnEliminar.addActionListener(this);
+        //Listar la tabla al momento de correr/iniciar el programa
+        listar(vista.tabla);
     }
 
     @Override
@@ -60,10 +63,29 @@ public class Controlador implements ActionListener{
                 vista.txtTelefono.setText(tel);
             }
         }
+        //Accion al dar click de Ok (Actualizar)
         if(e.getSource() == vista.btnOk){
             Actualizar();
             limpiarTabla();
             listar(vista.tabla);
+        }
+        //Accion al dar click de Eliminar
+        if(e.getSource() == vista.btnEliminar){
+            delete();
+            limpiarTabla();
+            listar(vista.tabla);
+        }
+    }
+
+    //Metodo Delete
+    public void delete(){
+        int fila = vista.tabla.getSelectedRow();
+        if(fila == -1){
+                JOptionPane.showMessageDialog(vista, "Debes seleccionar un Usuario de la tabla");
+        }else{
+            int id = Integer.parseInt((String) vista.tabla.getValueAt(fila, 0).toString());
+            dao.delete(id);
+            JOptionPane.showMessageDialog(vista, "Usuario Eliminado");
         }
     }
 
@@ -74,6 +96,8 @@ public class Controlador implements ActionListener{
             i = i-1;
         }
     }
+
+    //Metodo Actualizar
     public void Actualizar(){
         int id = Integer.parseInt(vista.txtId.getText());
         String nom = vista.txtNombre.getText();

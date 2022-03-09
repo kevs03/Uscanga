@@ -72,4 +72,17 @@ public class PersonaDAO {
         }
         return r;
     }
+
+    //Metodo Eliminar
+    public int delete(int id){
+        int r = 0;
+        String sql = "delete from persona where Id="+id;
+        try {
+            con = conectar.getConnection();
+            ps = con.prepareStatement(sql);
+            r = ps.executeUpdate();
+        } catch (Exception e){
+        }
+        return r;
+    }
 }
