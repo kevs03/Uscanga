@@ -14,7 +14,7 @@ public class Conexion {
         
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            con=DriverManager.getConnection("jdbc:mysql://localhost:3306/uscangainmobiliaria", "root","");
+            con=DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_uscanga", "root","");
         } catch (Exception e) { 
             System.out.println(String.valueOf(e));
         }

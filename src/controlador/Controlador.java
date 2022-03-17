@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import modelo.Persona;
 import modelo.PersonaDAO;
 import vista.Vista;
@@ -25,12 +27,11 @@ public class Controlador implements ActionListener{
     public Controlador(Vista v){
         this.vista = v;
         this.vista.btnListar.addActionListener(this);
-        this.vista.btnGuardar.addActionListener(this);
+        this.vista.btnAgregar.addActionListener(this);
         this.vista.btnEditar.addActionListener(this);
-        this.vista.btnOk.addActionListener(this);
         this.vista.btnEliminar.addActionListener(this);
-        //Listar la tabla al momento de correr/iniciar el programa
-        listar(vista.tabla);
+        this.vista.btnActualizar.addActionListener(this);
+        this.vista.btnNuevo.addActionListener(this);
     }
 
     @Override
@@ -39,9 +40,10 @@ public class Controlador implements ActionListener{
         if(e.getSource()==vista.btnListar){
             limpiarTabla();
             listar(vista.tabla);
+            nuevo();
         }
         //Si dan click al boton Guardar se manda a llamar al metodo Guardar
-        if(e.getSource() == vista.btnGuardar){
+        if(e.getSource() == vista.btnAgregar){
             agregar();
             limpiarTabla();
             listar(vista.tabla);
@@ -53,28 +55,47 @@ public class Controlador implements ActionListener{
                 JOptionPane.showMessageDialog(vista, "Debe seleccionar una Fila");
             }
             else{
-                int id = Integer.parseInt((String)vista.tabla.getValueAt(fila, 0).toString());
-                String nom = (String)vista.tabla.getValueAt(fila, 1);
-                String correo = (String)vista.tabla.getValueAt(fila, 2);
-                String tel = (String)vista.tabla.getValueAt(fila, 3);
-                vista.txtId.setText(""+id);
-                vista.txtNombre.setText(nom);
+                int id = Integer.parseInt((String) vista.tabla.getValueAt(fila, 0).toString());
+                String nom = (String) vista.tabla.getValueAt(fila, 1);
+                String nom2 = (String) vista.tabla.getValueAt(fila, 2);
+                String correo = (String) vista.tabla.getValueAt(fila, 3);
+                String tel = (String) vista.tabla.getValueAt(fila, 4);
+                String ubicacion = (String) vista.tabla.getValueAt(fila, 5);
+                String fecha = (String) vista.tabla.getValueAt(fila, 6);
+                vista.txtId.setText("" + id);
+                vista.txtNom.setText(nom);
+                vista.txtNom2.setText(nom2);
                 vista.txtCorreo.setText(correo);
-                vista.txtTelefono.setText(tel);
+                vista.txtTel.setText(tel);
+                vista.txtUbicacion.setText(ubicacion);
+                vista.txtFecha.setText(fecha);
             }
         }
         //Accion al dar click de Ok (Actualizar)
-        if(e.getSource() == vista.btnOk){
+        if(e.getSource() == vista.btnActualizar){
             Actualizar();
-            limpiarTabla();
             listar(vista.tabla);
+            nuevo();
         }
         //Accion al dar click de Eliminar
         if(e.getSource() == vista.btnEliminar){
             delete();
-            limpiarTabla();
             listar(vista.tabla);
+            nuevo();
         }
+    }
+
+    //Metodo Nuevo
+    void nuevo() {
+        vista.txtId.setText("");
+        vista.txtNom.setText("");
+        vista.txtNom2.setText("");
+        vista.txtTel.setText("");
+        vista.txtCorreo.setText("");
+        vista.txtUbicacion.setText("");
+        vista.txtFecha.setText("");
+        vista.txtNom.requestFocus();
+        vista.txtNom2.requestFocus();
     }
 
     //Metodo Delete
@@ -85,6 +106,7 @@ public class Controlador implements ActionListener{
         }else{
             int id = Integer.parseInt((String) vista.tabla.getValueAt(fila, 0).toString());
             dao.delete(id);
+            System.out.println("El Resultado es " + id);
             JOptionPane.showMessageDialog(vista, "Usuario Eliminado");
         }
     }
@@ -99,52 +121,84 @@ public class Controlador implements ActionListener{
 
     //Metodo Actualizar
     public void Actualizar(){
-        int id = Integer.parseInt(vista.txtId.getText());
-        String nom = vista.txtNombre.getText();
-        String correo = vista.txtCorreo.getText();
-        String tel = vista.txtTelefono.getText();
-        p.setId(id);
-        p.setNom(nom);
-        p.setCorreo(correo);
-        p.setTel(tel);
-        int r = dao.Actualizar(p);
-        if(r == 1){
-            JOptionPane.showMessageDialog(vista, "Usuario actualizado con exito");
-        }else {
-            JOptionPane.showMessageDialog(vista, "Error");
+        if (vista.txtId.getText().equals("")) {
+            JOptionPane.showMessageDialog(vista, "No se Identifica el Id debe selecionar la opcion Editar");
+        } else {
+            int id = Integer.parseInt(vista.txtId.getText());
+            String nom = vista.txtNom.getText();
+            String nom2 = vista.txtNom2.getText();
+            String correo = vista.txtCorreo.getText();
+            String tel = vista.txtTel.getText();
+            String ubicacion = vista.txtUbicacion.getText();
+            String fecha = vista.txtFecha.getText();
+            p.setId(id);
+            p.setNom(nom);
+            p.setNom2(nom2);
+            p.setCorreo(correo);
+            p.setTelefono(tel);
+            p.setUbicacion(ubicacion);
+            p.setFecha(fecha);
+            int r = dao.Actualizar(p);
+            if (r == 1) {
+                JOptionPane.showMessageDialog(vista, "Usuario Actualizado con Exito.");
+            } else {
+                JOptionPane.showMessageDialog(vista, "Error");
+            }
         }
+        limpiarTabla();
 }
 
 
 //Metodo Agregar
     public void agregar(){
-    String nom = vista.txtNombre.getText();
-    String correo = vista.txtCorreo.getText();
-    String tel = vista.txtTelefono.getText();
-    p.setNom(nom);
-    p.setCorreo(correo);
-    p.setTel(tel);
-    int r = dao.agregar(p);
-    if(r == 1){
-        JOptionPane.showMessageDialog(vista, "Usuario agregado con exito");
-    }else {
-        JOptionPane.showMessageDialog(vista, "Error");
-    }
+        String nom = vista.txtNom.getText();
+        String nom2 = vista.txtNom2.getText();
+        String correo = vista.txtCorreo.getText();
+        String tel = vista.txtTel.getText();
+        String ubicacion = vista.txtUbicacion.getText();
+        String fecha = vista.txtFecha.getText();
+        p.setNom(nom);
+        p.setNom2(nom2);
+        p.setCorreo(correo);
+        p.setTelefono(tel);
+        p.setUbicacion(ubicacion);
+        p.setFecha(fecha);
+        int r = dao.agregar(p);
+        if(r == 1){
+            JOptionPane.showMessageDialog(vista, "Usuario agregado con exito");
+        }else {
+            JOptionPane.showMessageDialog(vista, "Error");
+        }
+        limpiarTabla();
 }
 
 //Metodo Listar
     public void listar(JTable tabla){
-        modelo = (DefaultTableModel)tabla.getModel();
-        List<Persona>lista=dao.listar();
-        Object[]object = new Object[4];
-        for (int i = 0; i < lista.size(); i++){
-            object[0]=lista.get(i).getId();
-            object[1]=lista.get(i).getNom();
-            object[2]=lista.get(i).getCorreo();
-            object[3]=lista.get(i).getTel();
-            modelo.addRow(object);
+        centrarCeldas(tabla);
+        modelo = (DefaultTableModel) tabla.getModel();
+        tabla.setModel(modelo);
+        List<Persona> lista = dao.listar();
+        Object[] objeto = new Object[7];
+        for (int i = 0; i < lista.size(); i++) {
+            objeto[0] = lista.get(i).getId();
+            objeto[1] = lista.get(i).getNom();
+            objeto[2] = lista.get(i).getNom2();
+            objeto[3] = lista.get(i).getCorreo();
+            objeto[4] = lista.get(i).getTelefono();
+            objeto[5] = lista.get(i).getUbicacion();
+            objeto[6] = lista.get(i).getFecha();
+            modelo.addRow(objeto);
         }
-        vista.tabla.setModel(modelo);
+        tabla.setRowHeight(35);
+        tabla.setRowMargin(10);
+    }
+
+    void centrarCeldas(JTable tabla) {
+        DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
+        tcr.setHorizontalAlignment(SwingConstants.CENTER);
+        for (int i = 0; i < vista.tabla.getColumnCount(); i++) {
+            tabla.getColumnModel().getColumn(i).setCellRenderer(tcr);
+        }
     }
 
 }
