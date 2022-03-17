@@ -31,7 +31,6 @@ public class Controlador implements ActionListener{
         this.vista.btnEditar.addActionListener(this);
         this.vista.btnEliminar.addActionListener(this);
         this.vista.btnActualizar.addActionListener(this);
-        this.vista.btnNuevo.addActionListener(this);
     }
 
     @Override
