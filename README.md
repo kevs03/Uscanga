@@ -3,6 +3,16 @@
 **Table of Contents**
 
 [TOCM]
+## Descripción
+## Problema Identificado
+## Solución
+## Arquitectura
+## Requerimientos
+## Instalación
+## Configuración
+## Uso
+## Contribuciones
+## Roadmap
 
 [TOC]
 
